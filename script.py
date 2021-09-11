@@ -4,7 +4,7 @@
 #  1. Financial statement data: https://archive.ics.uci.edu/ml/datasets/Polish+companies+bankruptcy+data
 # ---------------------------------------------------------------------------------------------------------------------
 # The goal of this project is to identify possible groupings of firms based on their financial statement data. Since
-# the dataset contains 91 financial figures, I use unsupervised learning methods to simplify the data and cluster it.
+# the dataset contains 64 financial figures, I use unsupervised learning methods to simplify the data and cluster it.
 # At the end, I compare the cluster labels to whether the firms go bankrupt within a year of the data.
 
 import pandas as pd
