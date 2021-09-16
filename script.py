@@ -108,8 +108,8 @@ plt.cla()
 # diminishing gains in proximity. This choice of centroids is also consistent with the earlier t-SNE plot.
 model_labels = fcluster(clustered, 30, criterion='distance')
 
-# Cross tabulate the cluster labels with the labelled data. As seen, there is a very high probability (94.4%)
-# of a firm in the second cluster going bankrupt within the next year.
+# Cross tabulate the cluster labels with the labelled data (similar to a confusion matrix). As seen, there is a very 
+# high probability (94.4%) of a firm in the second cluster going bankrupt within the next year.
 actual_labels = np.where(actual_labels == True, 'Imminently Bankrupt', 'Will Persist')
 summary = pd.crosstab(model_labels, actual_labels, rownames=['Cluster'], normalize='index').round(decimals=3)
 print(summary)
