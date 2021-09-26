@@ -1,10 +1,13 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # Author: Eric Wang
 # Data:
-#  1. Financial statement data: https://archive.ics.uci.edu/ml/datasets/Polish+companies+bankruptcy+data
+#  1. Financial statement data:
+#     Zieba, M., Tomczak, S. K., & Tomczak, J. M. (2016). Ensemble Boosted Trees with Synthetic Features Generation in
+#     Application to Bankruptcy Prediction. Expert Systems with Applications.
+#     Link: https://www.ii.pwr.edu.pl/~tomczak/PDF/[MZSTJT].pdf
 # ---------------------------------------------------------------------------------------------------------------------
 # The goal of this project is to identify possible groupings of firms based on their financial statement data. Since
-# the dataset contains 64 financial figures, I use unsupervised learning methods to simplify the data and cluster it.
+# the dataset contains 91 financial figures, I use unsupervised learning methods to simplify the data and cluster it.
 # At the end, I compare the cluster labels to whether the firms go bankrupt within a year of the data.
 
 import pandas as pd
@@ -13,14 +16,12 @@ import matplotlib.pyplot as plt
 
 from scipy.io import arff
 from sklearn.manifold import TSNE
-from sklearn.decomposition import NMF
-from sklearn.decomposition import PCA
+from sklearn.decomposition import NMF, PCA
 from scipy import stats
 from sklearn.preprocessing import StandardScaler
 from ppca import PPCA
 from sklearn.pipeline import make_pipeline
-from scipy.cluster.hierarchy import dendrogram, linkage
-from scipy.cluster.hierarchy import fcluster
+from scipy.cluster.hierarchy import dendrogram, linkage,fcluster
 
 DATAROOT = '/Users/ericwang/Documents/GitHub datasets/Firm segmentation/'
 EXPORT = '/Users/ericwang/Documents/GitHub/Firm segmentation/'
@@ -53,7 +54,9 @@ plt.savefig(EXPORT + 'tsne_plot.png')
 plt.show()
 plt.cla()
 
-# Create a random sample of 50 firms that will go bankrupt within the year and 50 firms that will not
+# The dataset is unbalanced. Create a random sample of 50 firms that will go bankrupt within the year and
+# 50 firms that will not.
+print(trimmed['bankrupt'].value_counts()/trimmed.shape[0])
 sample = trimmed.query('bankrupt == True').sample(n=50)
 sample = sample.append(trimmed.query('bankrupt == False').sample(n=50))
 actual_labels = sample['bankrupt']
@@ -108,8 +111,8 @@ plt.cla()
 # diminishing gains in proximity. This choice of centroids is also consistent with the earlier t-SNE plot.
 model_labels = fcluster(clustered, 30, criterion='distance')
 
-# Cross tabulate the cluster labels with the labelled data (similar to a confusion matrix). As seen, there is a very 
-# high probability (94.4%) of a firm in the second cluster going bankrupt within the next year.
+# Cross tabulate the cluster labels with the labelled data. As seen, there is a very high probability (94.4%)
+# of a firm in the second cluster going bankrupt within the next year.
 actual_labels = np.where(actual_labels == True, 'Imminently Bankrupt', 'Will Persist')
 summary = pd.crosstab(model_labels, actual_labels, rownames=['Cluster'], normalize='index').round(decimals=3)
 print(summary)
